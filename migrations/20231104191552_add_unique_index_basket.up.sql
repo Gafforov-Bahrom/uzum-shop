@@ -1,0 +1,1 @@
+CREATE UNIQUE INDEX user_id_product_id_idx ON baskets(user_id, product_id);

@@ -1,0 +1,97 @@
+// - **Возможность пользователю просматривать список товаров**
+// - **Возможность просматривать определенный товар**
+// - **Возможность добавлять товар к корзину, удалять товар из корзины или изменять количество товара.**
+// - **Возможность показать товары в корзине**
+// - **Возможность оформить заказ и отменить**
+syntax = "proto3";
+
+package shop;
+
+option go_package = "./shop";
+
+import "google/protobuf/empty.proto";
+
+// import "google/protobuf/timestamp.proto";
+
+
+service ShopService{
+    rpc ListProducts(ListProductsRequest) returns (ListProductsResponse);
+    rpc GetProduct(GetProductRequest) returns (Product);
+    rpc AddProduct(AddProductRequest) returns (AddProductResponse);
+    rpc UpdateBasket(UpdateBasketRequest) returns (Basket);
+    rpc DeleteProduct(DeleteProductRequest) returns (google.protobuf.Empty);
+    rpc GetBasket(GetBasketsRequest) returns (GetBasketsResponse);
+}
+
+message ListProductsRequest {
+    uint64 limit = 1;
+    uint64 offset = 2;
+    string query = 3;
+}
+
+message GetProductRequest {
+    uint64 id = 1;
+}
+
+
+message ListProductsResponse {
+    uint64 count = 1;
+    repeated Product items = 2; 
+}
+
+message Product {
+    uint64 id = 1;
+    string name = 2;
+    uint64 price = 3;
+    string description = 4;
+    uint64 count = 5;
+}
+
+message User {
+    uint64 id = 1;
+    string name = 2;
+    string surname = 3;
+    string phone = 4;
+    string login = 5;
+    string password_hash = 6;
+    string role = 7;
+    string address = 8;
+    float coordinate_address_x = 9;
+    float coordinate_address_y = 10;
+}
+
+message Basket {
+    uint64 id = 1;
+    uint64 user_id = 2;
+    uint64 product_id = 3;
+    uint64 count = 4;
+}
+
+message AddProductRequest {
+    uint64 user_id = 1;
+    uint64 product_id = 2;
+    uint64 count = 3;
+}
+
+message AddProductResponse {
+    uint64 id = 1;
+}
+
+message UpdateBasketRequest {
+    uint64 user_id = 1;
+    uint64 product_id = 2;
+    uint64 count = 3;
+}
+
+message DeleteProductRequest {
+    uint64 user_id = 1;
+    uint64 product_id = 2;
+}
+
+message GetBasketsRequest {
+    uint64 user_id = 1;
+}
+
+message GetBasketsResponse {
+    repeated Basket items = 1;
+}
