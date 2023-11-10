@@ -17,3 +17,8 @@ type BasketService interface {
 	DeleteProduct(context.Context, *dto.Basket) error
 	ListBaskets(context.Context, dto.TypeID) ([]*dto.Basket, error)
 }
+
+type OrderService interface {
+	CreateOrder(context.Context, dto.TypeID) (dto.TypeID, error)
+	DeleteOrder(context.Context, dto.TypeID) error
+}

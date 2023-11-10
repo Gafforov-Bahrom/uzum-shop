@@ -29,6 +29,8 @@ type ShopServiceClient interface {
 	UpdateBasket(ctx context.Context, in *UpdateBasketRequest, opts ...grpc.CallOption) (*Basket, error)
 	DeleteProduct(ctx context.Context, in *DeleteProductRequest, opts ...grpc.CallOption) (*empty.Empty, error)
 	GetBasket(ctx context.Context, in *GetBasketsRequest, opts ...grpc.CallOption) (*GetBasketsResponse, error)
+	CreateOrder(ctx context.Context, in *CreateOrderRequest, opts ...grpc.CallOption) (*CreateOrderResponse, error)
+	DeleteOrder(ctx context.Context, in *DeleteOrderRequest, opts ...grpc.CallOption) (*empty.Empty, error)
 }
 
 type shopServiceClient struct {
@@ -93,6 +95,24 @@ func (c *shopServiceClient) GetBasket(ctx context.Context, in *GetBasketsRequest
 	return out, nil
 }
 
+func (c *shopServiceClient) CreateOrder(ctx context.Context, in *CreateOrderRequest, opts ...grpc.CallOption) (*CreateOrderResponse, error) {
+	out := new(CreateOrderResponse)
+	err := c.cc.Invoke(ctx, "/shop.ShopService/CreateOrder", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *shopServiceClient) DeleteOrder(ctx context.Context, in *DeleteOrderRequest, opts ...grpc.CallOption) (*empty.Empty, error) {
+	out := new(empty.Empty)
+	err := c.cc.Invoke(ctx, "/shop.ShopService/DeleteOrder", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // ShopServiceServer is the server API for ShopService service.
 // All implementations must embed UnimplementedShopServiceServer
 // for forward compatibility
@@ -103,6 +123,8 @@ type ShopServiceServer interface {
 	UpdateBasket(context.Context, *UpdateBasketRequest) (*Basket, error)
 	DeleteProduct(context.Context, *DeleteProductRequest) (*empty.Empty, error)
 	GetBasket(context.Context, *GetBasketsRequest) (*GetBasketsResponse, error)
+	CreateOrder(context.Context, *CreateOrderRequest) (*CreateOrderResponse, error)
+	DeleteOrder(context.Context, *DeleteOrderRequest) (*empty.Empty, error)
 	mustEmbedUnimplementedShopServiceServer()
 }
 
@@ -127,6 +149,12 @@ func (UnimplementedShopServiceServer) DeleteProduct(context.Context, *DeleteProd
 }
 func (UnimplementedShopServiceServer) GetBasket(context.Context, *GetBasketsRequest) (*GetBasketsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetBasket not implemented")
+}
+func (UnimplementedShopServiceServer) CreateOrder(context.Context, *CreateOrderRequest) (*CreateOrderResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateOrder not implemented")
+}
+func (UnimplementedShopServiceServer) DeleteOrder(context.Context, *DeleteOrderRequest) (*empty.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteOrder not implemented")
 }
 func (UnimplementedShopServiceServer) mustEmbedUnimplementedShopServiceServer() {}
 
@@ -249,6 +277,42 @@ func _ShopService_GetBasket_Handler(srv interface{}, ctx context.Context, dec fu
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ShopService_CreateOrder_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateOrderRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ShopServiceServer).CreateOrder(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/shop.ShopService/CreateOrder",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ShopServiceServer).CreateOrder(ctx, req.(*CreateOrderRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ShopService_DeleteOrder_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteOrderRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ShopServiceServer).DeleteOrder(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/shop.ShopService/DeleteOrder",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ShopServiceServer).DeleteOrder(ctx, req.(*DeleteOrderRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // ShopService_ServiceDesc is the grpc.ServiceDesc for ShopService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -279,6 +343,208 @@ var ShopService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetBasket",
 			Handler:    _ShopService_GetBasket_Handler,
+		},
+		{
+			MethodName: "CreateOrder",
+			Handler:    _ShopService_CreateOrder_Handler,
+		},
+		{
+			MethodName: "DeleteOrder",
+			Handler:    _ShopService_DeleteOrder_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "api/shop.proto",
+}
+
+// UserServiceClient is the client API for UserService service.
+//
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
+type UserServiceClient interface {
+	AddUser(ctx context.Context, in *AddUserRequest, opts ...grpc.CallOption) (*AddUserResponse, error)
+	UpdateUser(ctx context.Context, in *UpdateUserRequest, opts ...grpc.CallOption) (*User, error)
+	ListUsers(ctx context.Context, in *ListUsersRequest, opts ...grpc.CallOption) (*ListUsersResponse, error)
+	DeleteUser(ctx context.Context, in *DeleteUserRequest, opts ...grpc.CallOption) (*empty.Empty, error)
+}
+
+type userServiceClient struct {
+	cc grpc.ClientConnInterface
+}
+
+func NewUserServiceClient(cc grpc.ClientConnInterface) UserServiceClient {
+	return &userServiceClient{cc}
+}
+
+func (c *userServiceClient) AddUser(ctx context.Context, in *AddUserRequest, opts ...grpc.CallOption) (*AddUserResponse, error) {
+	out := new(AddUserResponse)
+	err := c.cc.Invoke(ctx, "/shop.UserService/AddUser", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userServiceClient) UpdateUser(ctx context.Context, in *UpdateUserRequest, opts ...grpc.CallOption) (*User, error) {
+	out := new(User)
+	err := c.cc.Invoke(ctx, "/shop.UserService/UpdateUser", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userServiceClient) ListUsers(ctx context.Context, in *ListUsersRequest, opts ...grpc.CallOption) (*ListUsersResponse, error) {
+	out := new(ListUsersResponse)
+	err := c.cc.Invoke(ctx, "/shop.UserService/ListUsers", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userServiceClient) DeleteUser(ctx context.Context, in *DeleteUserRequest, opts ...grpc.CallOption) (*empty.Empty, error) {
+	out := new(empty.Empty)
+	err := c.cc.Invoke(ctx, "/shop.UserService/DeleteUser", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// UserServiceServer is the server API for UserService service.
+// All implementations must embed UnimplementedUserServiceServer
+// for forward compatibility
+type UserServiceServer interface {
+	AddUser(context.Context, *AddUserRequest) (*AddUserResponse, error)
+	UpdateUser(context.Context, *UpdateUserRequest) (*User, error)
+	ListUsers(context.Context, *ListUsersRequest) (*ListUsersResponse, error)
+	DeleteUser(context.Context, *DeleteUserRequest) (*empty.Empty, error)
+	mustEmbedUnimplementedUserServiceServer()
+}
+
+// UnimplementedUserServiceServer must be embedded to have forward compatible implementations.
+type UnimplementedUserServiceServer struct {
+}
+
+func (UnimplementedUserServiceServer) AddUser(context.Context, *AddUserRequest) (*AddUserResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AddUser not implemented")
+}
+func (UnimplementedUserServiceServer) UpdateUser(context.Context, *UpdateUserRequest) (*User, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateUser not implemented")
+}
+func (UnimplementedUserServiceServer) ListUsers(context.Context, *ListUsersRequest) (*ListUsersResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListUsers not implemented")
+}
+func (UnimplementedUserServiceServer) DeleteUser(context.Context, *DeleteUserRequest) (*empty.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteUser not implemented")
+}
+func (UnimplementedUserServiceServer) mustEmbedUnimplementedUserServiceServer() {}
+
+// UnsafeUserServiceServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to UserServiceServer will
+// result in compilation errors.
+type UnsafeUserServiceServer interface {
+	mustEmbedUnimplementedUserServiceServer()
+}
+
+func RegisterUserServiceServer(s grpc.ServiceRegistrar, srv UserServiceServer) {
+	s.RegisterService(&UserService_ServiceDesc, srv)
+}
+
+func _UserService_AddUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AddUserRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServiceServer).AddUser(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/shop.UserService/AddUser",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServiceServer).AddUser(ctx, req.(*AddUserRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _UserService_UpdateUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateUserRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServiceServer).UpdateUser(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/shop.UserService/UpdateUser",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServiceServer).UpdateUser(ctx, req.(*UpdateUserRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _UserService_ListUsers_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListUsersRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServiceServer).ListUsers(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/shop.UserService/ListUsers",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServiceServer).ListUsers(ctx, req.(*ListUsersRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _UserService_DeleteUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteUserRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServiceServer).DeleteUser(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/shop.UserService/DeleteUser",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServiceServer).DeleteUser(ctx, req.(*DeleteUserRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+// UserService_ServiceDesc is the grpc.ServiceDesc for UserService service.
+// It's only intended for direct use with grpc.RegisterService,
+// and not to be introspected or modified (even as a copy)
+var UserService_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "shop.UserService",
+	HandlerType: (*UserServiceServer)(nil),
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "AddUser",
+			Handler:    _UserService_AddUser_Handler,
+		},
+		{
+			MethodName: "UpdateUser",
+			Handler:    _UserService_UpdateUser_Handler,
+		},
+		{
+			MethodName: "ListUsers",
+			Handler:    _UserService_ListUsers_Handler,
+		},
+		{
+			MethodName: "DeleteUser",
+			Handler:    _UserService_DeleteUser_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

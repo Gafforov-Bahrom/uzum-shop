@@ -12,6 +12,7 @@ func (r *Repository) List(ctx context.Context, in *dto.ListProductIn) (*dto.List
 		Select("id", "name", "description", "price", "count").
 		From("products").
 		Where("name ILIKE ?", "%"+in.Query+"%").
+		// Where("id IN (?)", in.Query).
 		Limit(in.Limit).
 		Offset(in.Offset).
 		ToSql()

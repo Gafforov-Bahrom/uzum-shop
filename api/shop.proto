@@ -11,7 +11,7 @@ option go_package = "./shop";
 
 import "google/protobuf/empty.proto";
 
-// import "google/protobuf/timestamp.proto";
+import "google/protobuf/timestamp.proto";
 
 
 service ShopService{
@@ -21,6 +21,8 @@ service ShopService{
     rpc UpdateBasket(UpdateBasketRequest) returns (Basket);
     rpc DeleteProduct(DeleteProductRequest) returns (google.protobuf.Empty);
     rpc GetBasket(GetBasketsRequest) returns (GetBasketsResponse);
+    rpc CreateOrder(CreateOrderRequest) returns (CreateOrderResponse);
+    rpc DeleteOrder(DeleteOrderRequest) returns (google.protobuf.Empty);
 }
 
 message ListProductsRequest {
@@ -94,4 +96,86 @@ message GetBasketsRequest {
 
 message GetBasketsResponse {
     repeated Basket items = 1;
+}
+
+message OrderItem {
+    string product = 1;
+    uint64 count = 2;
+    uint64 total = 3;
+}
+
+message Order {
+    uint64 id = 1;
+    uint64 user_id = 2;
+    string address = 3;
+    float coordinate_address_x = 4;
+    float coordinate_address_y = 5;
+    float coordinate_point_x = 6;
+    float coordinate_point_y = 7;
+    google.protobuf.Timestamp created_at = 8;
+    google.protobuf.Timestamp started_at = 9;
+    google.protobuf.Timestamp delivery_at = 10;
+    uint64 courier_id = 11;
+    uint64 delivery_status = 12;
+}
+
+message CreateOrderRequest {
+    uint64 user_id = 1;
+}
+
+message CreateOrderResponse {
+    uint64 id = 1;
+}
+
+message DeleteOrderRequest {
+    uint64 id = 1;
+}
+
+service UserService {
+    rpc AddUser(AddUserRequest) returns (AddUserResponse);
+    rpc UpdateUser(UpdateUserRequest) returns (User);
+    rpc ListUsers(ListUsersRequest) returns (ListUsersResponse);
+    rpc DeleteUser(DeleteUserRequest) returns(google.protobuf.Empty);
+}
+
+
+message ListUsersRequest {
+    repeated uint64 user_ids = 1;
+}
+
+message ListUsersResponse {
+    repeated User items = 1;
+}
+
+message AddUserRequest {
+    string name = 1;
+    string surname = 2;
+    string phone = 3;
+    string login = 4;
+    string password_hash = 5;
+    string role = 6;
+    string address = 7;
+    float coordinate_address_x = 8;
+    float coordinate_address_y = 9;
+}
+
+message AddUserResponse {
+    uint64 id = 1;
+}
+
+message UpdateUserRequest {
+    uint64 id = 1;
+    string name = 2;
+    string surname = 3;
+    string phone = 4;
+    string login = 5;
+    string password_hash = 6;
+    string role = 7;
+    string address = 8;
+    float coordinate_address_x = 9;
+    float coordinate_address_y = 10;
+}
+
+message DeleteUserRequest {
+    uint64 id = 1;
 }

@@ -1,4 +1,4 @@
-DATABASE_DSN=postgres://postgres:root@localhost:5432/uzum_shop?sslmode=disable
+DATABASE_DSN=postgres://postgres:1234@localhost:5432/uzum_shop?sslmode=disable
 
 generate:
 	rm -rf ./pkg/grpc && mkdir ./pkg/grpc
@@ -13,4 +13,5 @@ migrate-up:
 migrate-down:
 	migrate -source file://migrations -database "${DATABASE_DSN}" down
 
-
+run:
+	cd cmd/app && go run *.go
