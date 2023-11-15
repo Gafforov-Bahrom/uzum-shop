@@ -7,6 +7,7 @@ import (
 	"net"
 	"os"
 	"os/signal"
+	"sync"
 	"syscall"
 
 	"github.com/Gafforov-Bahrom/uzum_shop/internal/config"
@@ -23,6 +24,7 @@ func init() {
 	flag.Parse()
 }
 func main() {
+	var wg sync.WaitGroup
 	ctx, cancel := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
 	defer cancel()
 
@@ -48,5 +50,10 @@ func main() {
 		server.GracefulStop()
 	}()
 
+	httpServer := sp.GetHTTPServer()
+
+	wg.Add(1)
+	go httpServer.Start(ctx, &wg)
 	server.Serve(lis)
+	wg.Wait()
 }

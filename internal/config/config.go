@@ -14,6 +14,7 @@ type Config struct {
 	DatabaseHost     string `envconfig:"DB_HOST"`
 	DatabasePort     int64  `envconfig:"DB_PORT"`
 	Port             string `envconfig:"PORT"`
+	HTTPPort         string `envconfig:"HTTP_PORT"`
 }
 
 func NewConfig(envSrc string) (*Config, error) {
