@@ -22,3 +22,10 @@ type OrderService interface {
 	CreateOrder(context.Context, dto.TypeID) (dto.TypeID, error)
 	DeleteOrder(context.Context, dto.TypeID) error
 }
+
+type UserService interface {
+	ListUsers(context.Context, []dto.TypeID) ([]*dto.User, error)
+	AddUser(context.Context, dto.User) (dto.TypeID, error)
+	UpdateUser(context.Context, *dto.User) (*dto.User, error)
+	DeleteUser(context.Context, dto.TypeID) error
+}

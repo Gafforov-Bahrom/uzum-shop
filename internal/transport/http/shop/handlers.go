@@ -28,6 +28,28 @@ func (r *Router) GetProduct(c *gin.Context) {
 	c.JSON(200, dtoToProduct(product))
 }
 
+func (r *Router) GetProducts(c *gin.Context) {
+	temp := &dto.ListProductIn{
+		Limit:  100,
+		Offset: 0,
+		Query:  c.Query("query"),
+	}
+
+	products, err := r.productService.List(c, temp)
+	if errors.Is(err, sql.ErrNoRows) {
+		c.AbortWithStatus(404)
+	}
+	if err != nil {
+		c.AbortWithError(500, err)
+		return
+	}
+	res := GetProductsResponse{
+		Count:    products.Count,
+		Products: listToProduct(products.Items),
+	}
+	c.JSON(200, res)
+}
+
 func (r *Router) AddProduct(c *gin.Context) {
 	var request AddProductRequest
 	err := c.ShouldBindJSON(&request)

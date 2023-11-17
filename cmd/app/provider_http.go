@@ -11,6 +11,7 @@ func (sp *serviceProvider) GetShopRouter() *shop.Router {
 		sp.GetProductService(),
 		sp.GetBasketService(),
 		sp.GetOrderService(),
+		// sp.GetUserService(),
 	)
 }
 

@@ -11,3 +11,11 @@ func dtoToProduct(in *dto.Product) *Product {
 		Price:       in.Price,
 	}
 }
+
+func listToProduct(in []*dto.Product) []*Product {
+	out := make([]*Product, len(in))
+	for i, item := range in {
+		out[i] = dtoToProduct(item)
+	}
+	return out
+}

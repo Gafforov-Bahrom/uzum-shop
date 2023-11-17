@@ -17,12 +17,9 @@ import "google/protobuf/timestamp.proto";
 service ShopService{
     rpc ListProducts(ListProductsRequest) returns (ListProductsResponse);
     rpc GetProduct(GetProductRequest) returns (Product);
-    rpc AddProduct(AddProductRequest) returns (AddProductResponse);
-    rpc UpdateBasket(UpdateBasketRequest) returns (Basket);
-    rpc DeleteProduct(DeleteProductRequest) returns (google.protobuf.Empty);
-    rpc GetBasket(GetBasketsRequest) returns (GetBasketsResponse);
-    rpc CreateOrder(CreateOrderRequest) returns (CreateOrderResponse);
-    rpc DeleteOrder(DeleteOrderRequest) returns (google.protobuf.Empty);
+    rpc CreateProduct (CreateProductRequest) returns (CreateProductResponse);
+    rpc UpdateProduct (UpdateProductRequest) returns (UpdateProductResponse);
+    rpc DeleteProduct (DeleteProductRequest) returns (google.protobuf.Empty);
 }
 
 message ListProductsRequest {
@@ -85,7 +82,7 @@ message UpdateBasketRequest {
     uint64 count = 3;
 }
 
-message DeleteProductRequest {
+message DeleteBasketProductRequest {
     uint64 user_id = 1;
     uint64 product_id = 2;
 }
@@ -130,6 +127,48 @@ message CreateOrderResponse {
 message DeleteOrderRequest {
     uint64 id = 1;
 }
+
+service BasketService {
+    rpc AddProduct(AddProductRequest) returns (AddProductResponse);
+    rpc UpdateBasket(UpdateBasketRequest) returns (Basket);
+    rpc GetBasket(GetBasketsRequest) returns (GetBasketsResponse);
+    rpc DeleteBasketProduct(DeleteBasketProductRequest) returns (google.protobuf.Empty);
+}
+
+service OrderService {
+    rpc CreateOrder(CreateOrderRequest) returns (CreateOrderResponse);
+    rpc DeleteOrder(DeleteOrderRequest) returns (google.protobuf.Empty);
+}
+
+message CreateProductRequest {
+    string name = 1;
+    uint64 price = 2;
+    string description = 3;
+    uint64 count = 4;
+}
+
+
+message CreateProductResponse {
+    uint64 id = 1;
+}
+
+
+message UpdateProductRequest {
+    uint64 id = 1;
+    string name = 2;
+    uint64 price = 3;
+    string description = 4;
+    uint64 count = 5;
+}
+
+message UpdateProductResponse {
+    uint64 id = 1;
+}
+
+message DeleteProductRequest {
+    uint64 id = 1;
+}
+
 
 service UserService {
     rpc AddUser(AddUserRequest) returns (AddUserResponse);

@@ -37,6 +37,8 @@ func main() {
 
 	server := grpc.NewServer()
 	server.RegisterService(&desc.ShopService_ServiceDesc, sp.GetProductServer())
+	server.RegisterService(&desc.BasketService_ServiceDesc, sp.GetBasketServer())
+	server.RegisterService(&desc.OrderService_ServiceDesc, sp.GetOrderServer())
 	server.RegisterService(&desc.UserService_ServiceDesc, sp.GetUserServer())
 
 	lis, err := net.Listen("tcp", cfg.Port)

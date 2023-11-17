@@ -40,5 +40,6 @@ func (s *Server) Start(ctx context.Context, wg *sync.WaitGroup) error {
 func (s *Server) setShopRoutes(shopRouter *shop.Router) {
 	shop := s.engine.Group("/shop")
 	shop.GET("/v1/product/:product_id", shopRouter.GetProduct)
+	shop.GET("/v1/products", shopRouter.GetProducts)
 	shop.POST("/v1/basket", shopRouter.AddProduct)
 }

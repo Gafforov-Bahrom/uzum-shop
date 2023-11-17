@@ -1,11 +1,16 @@
 package shop
 
 type Product struct {
-	Id          uint64 `json:"id"`
+	Id          uint64 `json:"-"`
 	Name        string `json:"name"`
-	Description string `json:"description"`
-	Count       uint64 `json:"count"`
+	Description string `json:"-"`
+	Count       uint64 `json:"-"`
 	Price       uint64 `json:"price"`
+}
+
+type GetProductsResponse struct {
+	Count    uint64     `json:"count"`
+	Products []*Product `json:"products"`
 }
 
 type AddProductRequest struct {
