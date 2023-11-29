@@ -4,6 +4,7 @@ go 1.21.3
 
 require (
 	github.com/Masterminds/squirrel v1.5.4
+	github.com/envoyproxy/protoc-gen-validate v1.0.2
 	github.com/gin-gonic/gin v1.9.1
 	github.com/golang/protobuf v1.5.3
 	github.com/jmoiron/sqlx v1.3.5

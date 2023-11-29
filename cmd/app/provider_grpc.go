@@ -18,6 +18,7 @@ func (sp *serviceProvider) GetProductServer() desc.ShopServiceServer {
 func (sp *serviceProvider) GetBasketServer() desc.BasketServiceServer {
 	return basket.NewService(
 		sp.GetBasketService(),
+		sp.GetLoginClient(),
 	)
 }
 

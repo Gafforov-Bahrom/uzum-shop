@@ -8,8 +8,12 @@ import (
 )
 
 func (s *grpcService) AddProduct(ctx context.Context, in *desc.AddProductRequest) (*desc.AddProductResponse, error) {
+	userId, err := s.getUserId(ctx, in.AccessToken)
+	if err != nil {
+		return nil, err
+	}
 	out, err := s.basketService.AddProduct(ctx, &dto.Basket{
-		UserId:    dto.TypeID(in.UserId),
+		UserId:    dto.TypeID(userId),
 		ProductId: dto.TypeID(in.ProductId),
 		Count:     in.Count,
 	})

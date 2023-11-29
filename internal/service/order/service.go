@@ -1,14 +1,16 @@
 package order
 
 type Service struct {
-	repo     OrderRepository
-	userRepo UserRepository
+	repo       OrderRepository
+	userRepo   UserRepository
+	basketRepo BasketRepository
 }
 
-func NewService(repo OrderRepository, userRepo UserRepository) *Service {
+func NewService(repo OrderRepository, userRepo UserRepository, basketRepo BasketRepository) *Service {
 	return &Service{
-		repo:     repo,
-		userRepo: userRepo,
+		repo:       repo,
+		userRepo:   userRepo,
+		basketRepo: basketRepo,
 	}
 }
 

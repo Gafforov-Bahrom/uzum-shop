@@ -67,7 +67,7 @@ message Basket {
 }
 
 message AddProductRequest {
-    uint64 user_id = 1;
+    string access_token = 1;
     uint64 product_id = 2;
     uint64 count = 3;
 }
@@ -95,12 +95,6 @@ message GetBasketsResponse {
     repeated Basket items = 1;
 }
 
-message OrderItem {
-    string product = 1;
-    uint64 count = 2;
-    uint64 total = 3;
-}
-
 message Order {
     uint64 id = 1;
     uint64 user_id = 2;
@@ -114,6 +108,7 @@ message Order {
     google.protobuf.Timestamp delivery_at = 10;
     uint64 courier_id = 11;
     uint64 delivery_status = 12;
+    repeated uint64 items = 13;
 }
 
 message CreateOrderRequest {
@@ -135,9 +130,11 @@ service BasketService {
     rpc DeleteBasketProduct(DeleteBasketProductRequest) returns (google.protobuf.Empty);
 }
 
+
 service OrderService {
     rpc CreateOrder(CreateOrderRequest) returns (CreateOrderResponse);
     rpc DeleteOrder(DeleteOrderRequest) returns (google.protobuf.Empty);
+    rpc ListOrders(ListOrdersRequest) returns (ListOrdersResponse);
 }
 
 message CreateProductRequest {
@@ -167,6 +164,17 @@ message UpdateProductResponse {
 
 message DeleteProductRequest {
     uint64 id = 1;
+}
+
+message ListOrdersRequest {
+    uint64 limit = 1;
+    uint64 offset = 2;
+    repeated uint64 ids = 3;
+}
+
+message ListOrdersResponse {
+    uint64 count = 1;
+    repeated Order items = 2;
 }
 
 

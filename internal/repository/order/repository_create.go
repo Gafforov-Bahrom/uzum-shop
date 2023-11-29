@@ -5,9 +5,27 @@ import (
 	"time"
 
 	"github.com/Gafforov-Bahrom/uzum_shop/internal/dto"
+	"github.com/jmoiron/sqlx"
+	"github.com/lib/pq"
 )
 
 func (r *Repository) CreateOrder(ctx context.Context, in *dto.Order) (dto.TypeID, error) {
+	tx, err := r.db.Beginx()
+	if err != nil {
+		return 0, err
+	}
+	defer func() {
+		if err == nil {
+			tx.Commit()
+		} else {
+			tx.Rollback()
+		}
+	}()
+
+	dtoItem := make([]int64, len(in.Items))
+	for i, v := range in.Items {
+		dtoItem[i] = int64(v)
+	}
 	var response dto.TypeID
 	query, args, err := r.sq.
 		Insert("orders").
@@ -23,6 +41,7 @@ func (r *Repository) CreateOrder(ctx context.Context, in *dto.Order) (dto.TypeID
 			"delivery_at",
 			"courier_id",
 			"delivery_status",
+			"items",
 		).
 		Values(
 			in.UserId,
@@ -35,7 +54,8 @@ func (r *Repository) CreateOrder(ctx context.Context, in *dto.Order) (dto.TypeID
 			nil,
 			nil,
 			nil,
-			nil,
+			0,
+			pq.Int64Array(dtoItem),
 		).
 		Suffix("RETURNING id").
 		ToSql()
@@ -46,13 +66,18 @@ func (r *Repository) CreateOrder(ctx context.Context, in *dto.Order) (dto.TypeID
 
 	var dbItem dbOrder
 
-	err = r.db.GetContext(ctx, &dbItem, query, args...)
+	err = tx.GetContext(ctx, &dbItem, query, args...)
 	if err != nil {
 		return 0, err
 	}
 
 	response = dto.TypeID(dbItem.Id)
 
+	_ = r.updateProducts(tx, response)
+
 	return response, nil
-	// return 0, nil
+}
+
+func (r *Repository) updateProducts(tx *sqlx.Tx, orderId dto.TypeID) error {
+	return nil
 }

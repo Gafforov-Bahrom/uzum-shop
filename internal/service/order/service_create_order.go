@@ -19,5 +19,17 @@ func (s *Service) CreateOrder(ctx context.Context, in dto.TypeID) (dto.TypeID, e
 	response.CoordinateAddressX = user[0].CoordinateAddressX
 	response.CoordinateAddressY = user[0].CoordinateAddressY
 
+	items, err := s.basketRepo.ListBaskets(ctx, response.UserId)
+	if err != nil {
+		return 0, err
+	}
+
+	temp := make([]uint64, len(items))
+
+	for i, item := range items {
+		temp[i] = uint64(item.Id)
+	}
+	response.Items = temp
+
 	return s.repo.CreateOrder(ctx, &response)
 }

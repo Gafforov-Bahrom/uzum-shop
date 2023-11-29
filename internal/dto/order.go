@@ -15,4 +15,16 @@ type Order struct {
 	DeliveryAt         time.Time
 	CourierId          TypeID
 	DeliveryStatus     int64
+	Items              []uint64
+}
+
+type ListOrdersIn struct {
+	Limit  uint64
+	Offset uint64
+	Ids    []TypeID
+}
+
+type ListOrderOut struct {
+	Count uint64
+	Items []*Order
 }

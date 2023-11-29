@@ -42,4 +42,9 @@ func (s *Server) setShopRoutes(shopRouter *shop.Router) {
 	shop.GET("/v1/product/:product_id", shopRouter.GetProduct)
 	shop.GET("/v1/products", shopRouter.GetProducts)
 	shop.POST("/v1/basket", shopRouter.AddProduct)
+	shop.PUT("/v1/basket", shopRouter.UpdateProduct)
+	shop.DELETE("v1/basket/:product_id", shopRouter.DeleteProduct)
+	shop.GET("v1/basket", shopRouter.GetBasket)
+	shop.POST("v1/order", shopRouter.CreateOrder)
+	shop.DELETE("v1/order/:order_id", shopRouter.CancelOrder)
 }

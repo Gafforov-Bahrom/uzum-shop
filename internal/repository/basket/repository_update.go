@@ -7,6 +7,7 @@ import (
 )
 
 func (r *Repository) UpdateBasket(ctx context.Context, in *dto.Basket) (*dto.Basket, error) {
+
 	query, args, err := r.sq.
 		Update("baskets").
 		Set("count", in.Count).

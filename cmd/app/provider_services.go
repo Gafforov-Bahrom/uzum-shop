@@ -5,6 +5,8 @@ import (
 	"github.com/Gafforov-Bahrom/uzum_shop/internal/service/order"
 	"github.com/Gafforov-Bahrom/uzum_shop/internal/service/product"
 	"github.com/Gafforov-Bahrom/uzum_shop/internal/service/user"
+	desc "github.com/Gafforov-Bahrom/uzum_shop/pkg/grpc/login_v1"
+	"google.golang.org/grpc"
 )
 
 func (sp *serviceProvider) GetProductService() *product.Service {
@@ -29,9 +31,9 @@ func (sp *serviceProvider) GetOrderService() *order.Service {
 	if sp.serviceOrders == nil {
 		sp.serviceOrders = order.NewService(
 			sp.GetOrderRepository(),
-			// sp.GetProductRepository(),
-			// sp.GetBasketRepository(),
 			sp.GetUserRepository(),
+			sp.GetBasketRepository(),
+			// sp.GetProductRepository(),
 		)
 	}
 	return sp.serviceOrders
@@ -44,4 +46,12 @@ func (sp *serviceProvider) GetUserService() *user.Service {
 		)
 	}
 	return sp.serviceUsers
+}
+
+func (sp *serviceProvider) GetLoginClient() desc.LoginV1Client {
+	connection, err := grpc.Dial("localhost:9081", grpc.WithInsecure())
+	if err != nil {
+		panic(err)
+	}
+	return desc.NewLoginV1Client(connection)
 }
