@@ -23,6 +23,7 @@ func (r *Router) GetProduct(c *gin.Context) {
 	}
 	if err != nil {
 		c.AbortWithError(500, err)
+		return
 	}
 
 	c.JSON(200, dtoToProduct(product))
@@ -73,6 +74,7 @@ func (r *Router) AddProduct(c *gin.Context) {
 	})
 	if err != nil {
 		c.AbortWithError(500, err)
+		return
 	}
 
 	c.JSON(201, gin.H{
@@ -82,19 +84,27 @@ func (r *Router) AddProduct(c *gin.Context) {
 
 func (r *Router) UpdateProduct(c *gin.Context) {
 	var request UpdateProductRequest
-	err := c.ShouldBindJSON(&request)
+
+	token := c.GetHeader("Authorization")
+	userId, err := r.getUserId(c, token)
+	if err != nil {
+		c.AbortWithError(401, err)
+		return
+	}
+	err = c.ShouldBindJSON(&request)
 	if err != nil {
 		c.AbortWithError(400, err)
 		return
 	}
 
 	product, err := r.basketService.UpdateBasket(c, &dto.Basket{
-		UserId:    dto.TypeID(request.UserId),
+		UserId:    dto.TypeID(userId),
 		ProductId: dto.TypeID(request.ProductId),
 		Count:     request.Count,
 	})
 	if err != nil {
 		c.AbortWithError(500, err)
+		return
 	}
 	c.JSON(200, gin.H{
 		"count": product.Count,
@@ -105,36 +115,41 @@ func (r *Router) DeleteProduct(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("product_id"))
 	if err != nil {
 		c.AbortWithError(400, err)
+		return
 	}
 
-	var request DeleteProductRequest
-	err = c.ShouldBindJSON(&request)
+	token := c.GetHeader("Authorization")
+	userId, err := r.getUserId(c, token)
 	if err != nil {
-		c.AbortWithError(400, err)
+		c.AbortWithError(401, err)
+		return
 	}
 
 	err = r.basketService.DeleteProduct(c, &dto.Basket{
-		UserId:    dto.TypeID(request.UserId),
+		UserId:    dto.TypeID(userId),
 		ProductId: dto.TypeID(id),
 	})
 	if err != nil {
 		c.AbortWithError(500, err)
+		return
 	}
 
-	c.JSON(200, "product deleted")
+	c.JSON(204, gin.H{})
 
 }
 
 func (r *Router) GetBasket(c *gin.Context) {
-	var request GetBasketRequest
-	err := c.ShouldBindJSON(&request)
+	token := c.GetHeader("Authorization")
+	userId, err := r.getUserId(c, token)
 	if err != nil {
-		c.AbortWithError(400, err)
+		c.AbortWithError(401, err)
+		return
 	}
 
-	basket, err := r.basketService.ListBaskets(c, dto.TypeID(request.UserId))
+	basket, err := r.basketService.ListBaskets(c, dto.TypeID(userId))
 	if err != nil {
 		c.AbortWithError(500, err)
+		return
 	}
 	c.JSON(200, gin.H{
 		"basket": basket,
@@ -142,15 +157,19 @@ func (r *Router) GetBasket(c *gin.Context) {
 }
 
 func (r *Router) CreateOrder(c *gin.Context) {
-	var request CreateOrderRequest
-	err := c.ShouldBindJSON(&request)
+	token := c.GetHeader("Authorization")
+	userId, err := r.getUserId(c, token)
 	if err != nil {
-		c.AbortWithError(400, err)
+		c.AbortWithError(401, err)
+		return
 	}
 
-	order, err := r.orderService.CreateOrder(c, dto.TypeID(request.UserId))
+	order, err := r.orderService.CreateOrder(c, dto.TypeID(userId))
 	if err != nil {
-		c.AbortWithError(500, err)
+		c.AbortWithStatusJSON(404, gin.H{
+			"message": "not enough products",
+		})
+		return
 	}
 	c.JSON(200, gin.H{
 		"order": order,
@@ -158,15 +177,26 @@ func (r *Router) CreateOrder(c *gin.Context) {
 }
 
 func (r *Router) CancelOrder(c *gin.Context) {
+	token := c.GetHeader("Authorization")
+	userId, err := r.getUserId(c, token)
+	_ = userId
+	if err != nil {
+		c.AbortWithError(401, err)
+	}
+
 	orderId, err := strconv.Atoi(c.Param("order_id"))
 	if err != nil {
 		c.AbortWithError(400, err)
 		return
 	}
 
-	err = r.orderService.DeleteOrder(c, dto.TypeID(orderId))
+	err = r.orderService.DeleteOrder(c, dto.DeleteOrderRequest{
+		Id:     dto.TypeID(orderId),
+		UserId: dto.TypeID(userId),
+	})
 	if err != nil {
 		c.AbortWithError(500, err)
+		return
 	}
-	c.JSON(200, "order is deleted")
+	c.JSON(204, gin.H{})
 }

@@ -14,8 +14,12 @@ import (
 var errUpdateBasketProductNotFound = status.Error(codes.NotFound, "Basket not found")
 
 func (s *grpcService) UpdateBasket(ctx context.Context, in *desc.UpdateBasketRequest) (*desc.Basket, error) {
+	userId, err := s.getUserId(ctx, in.AccessToken)
+	if err != nil {
+		return nil, err
+	}
 	out, err := s.basketService.UpdateBasket(ctx, &dto.Basket{
-		UserId:    dto.TypeID(in.UserId),
+		UserId:    dto.TypeID(userId),
 		ProductId: dto.TypeID(in.ProductId),
 		Count:     in.Count,
 	})

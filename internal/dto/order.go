@@ -28,3 +28,8 @@ type ListOrderOut struct {
 	Count uint64
 	Items []*Order
 }
+
+type DeleteOrderRequest struct {
+	UserId TypeID
+	Id     TypeID
+}

@@ -15,7 +15,15 @@ import (
 var errDeleteOrderNotFound = status.Error(codes.NotFound, "Order not found")
 
 func (s *grpcService) DeleteOrder(ctx context.Context, in *desc.DeleteOrderRequest) (*emptypb.Empty, error) {
-	err := s.orderService.DeleteOrder(ctx, dto.TypeID(in.Id))
+	userId, err := s.getUserId(ctx, in.AccessToken)
+	if err != nil {
+		return nil, err
+	}
+
+	err = s.orderService.DeleteOrder(ctx, dto.DeleteOrderRequest{
+		UserId: dto.TypeID(userId),
+		Id:     dto.TypeID(in.Id),
+	})
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return &emptypb.Empty{}, errDeleteOrderNotFound

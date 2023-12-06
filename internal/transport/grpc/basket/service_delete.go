@@ -15,8 +15,16 @@ import (
 var errDeleteBasketProductNotFound = status.Error(codes.NotFound, "Basket not found")
 
 func (s *grpcService) DeleteBasketProduct(ctx context.Context, in *desc.DeleteBasketProductRequest) (*emptypb.Empty, error) {
-	err := s.basketService.DeleteProduct(ctx, &dto.Basket{
-		UserId:    dto.TypeID(in.UserId),
+	// s.loginClient.GetUserId(ctx, &login_v1.GetUserIdRequest{
+	// 	A
+	// })
+	userId, err := s.getUserId(ctx, in.AccessToken)
+	if err != nil {
+		return nil, err
+	}
+
+	err = s.basketService.DeleteProduct(ctx, &dto.Basket{
+		UserId:    dto.TypeID(userId),
 		ProductId: dto.TypeID(in.ProductId),
 	})
 

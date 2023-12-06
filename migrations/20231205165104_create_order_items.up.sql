@@ -1,0 +1,6 @@
+CREATE TABLE order_items(
+    id BIGINT PRIMARY KEY,
+    product_id BIGINT NULL REFERENCES products(id) ON DELETE SET NULL,
+    order_id BIGINT NOT NULL REFERENCES orders(id) ON DELETE CASCADE,
+    count BIGINT NOT NULL
+);

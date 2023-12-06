@@ -14,7 +14,12 @@ import (
 var errGetBasketNotFound = status.Error(codes.NotFound, "basket not found")
 
 func (s *grpcService) GetBasket(ctx context.Context, in *desc.GetBasketsRequest) (*desc.GetBasketsResponse, error) {
-	out, err := s.basketService.ListBaskets(ctx, dto.TypeID(in.UserId))
+	userId, err := s.getUserId(ctx, in.AccessToken)
+	if err != nil {
+		return nil, err
+	}
+
+	out, err := s.basketService.ListBaskets(ctx, dto.TypeID(userId))
 
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {

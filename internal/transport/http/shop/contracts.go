@@ -20,7 +20,7 @@ type BasketService interface {
 
 type OrderService interface {
 	CreateOrder(context.Context, dto.TypeID) (dto.TypeID, error)
-	DeleteOrder(context.Context, dto.TypeID) error
+	DeleteOrder(context.Context, dto.DeleteOrderRequest) error
 }
 
 type UserService interface {

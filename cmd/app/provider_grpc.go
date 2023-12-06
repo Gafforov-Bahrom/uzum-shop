@@ -25,6 +25,7 @@ func (sp *serviceProvider) GetBasketServer() desc.BasketServiceServer {
 func (sp *serviceProvider) GetOrderServer() desc.OrderServiceServer {
 	return order.NewService(
 		sp.GetOrderService(),
+		sp.GetLoginClient(),
 	)
 }
 

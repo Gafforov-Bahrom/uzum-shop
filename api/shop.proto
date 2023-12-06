@@ -77,18 +77,18 @@ message AddProductResponse {
 }
 
 message UpdateBasketRequest {
-    uint64 user_id = 1;
+    string access_token = 1;
     uint64 product_id = 2;
     uint64 count = 3;
 }
 
 message DeleteBasketProductRequest {
-    uint64 user_id = 1;
+    string access_token = 1;
     uint64 product_id = 2;
 }
 
 message GetBasketsRequest {
-    uint64 user_id = 1;
+    string access_token = 1;
 }
 
 message GetBasketsResponse {
@@ -112,7 +112,7 @@ message Order {
 }
 
 message CreateOrderRequest {
-    uint64 user_id = 1;
+    string access_token = 1;
 }
 
 message CreateOrderResponse {
@@ -120,7 +120,8 @@ message CreateOrderResponse {
 }
 
 message DeleteOrderRequest {
-    uint64 id = 1;
+    string access_token = 1;
+    uint64 id = 2;
 }
 
 service BasketService {

@@ -8,7 +8,12 @@ import (
 )
 
 func (s *grpcService) CreateOrder(ctx context.Context, in *desc.CreateOrderRequest) (*desc.CreateOrderResponse, error) {
-	out, err := s.orderService.CreateOrder(ctx, dto.TypeID(in.UserId))
+	userId, err := s.getUserId(ctx, in.AccessToken)
+	if err != nil {
+		return nil, err
+	}
+
+	out, err := s.orderService.CreateOrder(ctx, dto.TypeID(userId))
 	if err != nil {
 		return nil, err
 	}
