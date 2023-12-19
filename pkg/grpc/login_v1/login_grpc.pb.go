@@ -28,6 +28,7 @@ type LoginV1Client interface {
 	GetAccessToken(ctx context.Context, in *GetAccessToken_Request, opts ...grpc.CallOption) (*GetAccessToken_Response, error)
 	Check(ctx context.Context, in *Check_Request, opts ...grpc.CallOption) (*empty.Empty, error)
 	GetUserId(ctx context.Context, in *GetUserIdRequest, opts ...grpc.CallOption) (*GetUserIdResponse, error)
+	GetUserRole(ctx context.Context, in *GetUserRoleRequest, opts ...grpc.CallOption) (*GetUserRoleResponse, error)
 }
 
 type loginV1Client struct {
@@ -83,6 +84,15 @@ func (c *loginV1Client) GetUserId(ctx context.Context, in *GetUserIdRequest, opt
 	return out, nil
 }
 
+func (c *loginV1Client) GetUserRole(ctx context.Context, in *GetUserRoleRequest, opts ...grpc.CallOption) (*GetUserRoleResponse, error) {
+	out := new(GetUserRoleResponse)
+	err := c.cc.Invoke(ctx, "/login_v1.LoginV1/GetUserRole", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // LoginV1Server is the server API for LoginV1 service.
 // All implementations must embed UnimplementedLoginV1Server
 // for forward compatibility
@@ -92,6 +102,7 @@ type LoginV1Server interface {
 	GetAccessToken(context.Context, *GetAccessToken_Request) (*GetAccessToken_Response, error)
 	Check(context.Context, *Check_Request) (*empty.Empty, error)
 	GetUserId(context.Context, *GetUserIdRequest) (*GetUserIdResponse, error)
+	GetUserRole(context.Context, *GetUserRoleRequest) (*GetUserRoleResponse, error)
 	mustEmbedUnimplementedLoginV1Server()
 }
 
@@ -113,6 +124,9 @@ func (UnimplementedLoginV1Server) Check(context.Context, *Check_Request) (*empty
 }
 func (UnimplementedLoginV1Server) GetUserId(context.Context, *GetUserIdRequest) (*GetUserIdResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetUserId not implemented")
+}
+func (UnimplementedLoginV1Server) GetUserRole(context.Context, *GetUserRoleRequest) (*GetUserRoleResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetUserRole not implemented")
 }
 func (UnimplementedLoginV1Server) mustEmbedUnimplementedLoginV1Server() {}
 
@@ -217,6 +231,24 @@ func _LoginV1_GetUserId_Handler(srv interface{}, ctx context.Context, dec func(i
 	return interceptor(ctx, in, info, handler)
 }
 
+func _LoginV1_GetUserRole_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetUserRoleRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LoginV1Server).GetUserRole(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/login_v1.LoginV1/GetUserRole",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LoginV1Server).GetUserRole(ctx, req.(*GetUserRoleRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // LoginV1_ServiceDesc is the grpc.ServiceDesc for LoginV1 service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -243,6 +275,10 @@ var LoginV1_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetUserId",
 			Handler:    _LoginV1_GetUserId_Handler,
+		},
+		{
+			MethodName: "GetUserRole",
+			Handler:    _LoginV1_GetUserRole_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
