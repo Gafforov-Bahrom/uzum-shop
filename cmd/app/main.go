@@ -37,6 +37,10 @@ func main() {
 
 	_ = test
 
+	test_2 := "test_2"
+
+	_ = test_2
+
 	sp := NewServiceProvider(cfg)
 
 	server := grpc.NewServer()
