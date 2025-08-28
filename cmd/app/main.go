@@ -33,6 +33,10 @@ func main() {
 		panic(err)
 	}
 
+	test := "test"
+
+	_ = test
+
 	sp := NewServiceProvider(cfg)
 
 	server := grpc.NewServer()
